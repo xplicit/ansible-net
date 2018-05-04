@@ -6,6 +6,23 @@ namespace Ansible
     {
         public override string CommandName => "ansible-playbook";
 
-        public new Playbook Version() => (Playbook) base.Version();
+        public string Name { get; }
+
+        public Playbook(string name)
+        {
+            Name = name;
+        }
+
+        protected override string CreateCommandLine()
+        {
+            var args = base.CreateCommandLine();
+
+            if (args.Length > 0)
+                args = Name + " " + args;
+            else
+                args = Name;
+
+            return args;
+        }
     }
 }

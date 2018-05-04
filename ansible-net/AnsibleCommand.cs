@@ -36,7 +36,7 @@ namespace Ansible
             commandProcess.WaitForExit();
         }
 
-        public virtual string CreateCommandLine()
+        protected virtual string CreateCommandLine()
         {
             var args = string.Empty;
 
