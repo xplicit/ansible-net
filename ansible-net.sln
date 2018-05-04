@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ansible-net", "ansible-net\ansible-net.csproj", "{EB368D7B-83D7-4CE7-B155-1D87DEDB41D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ansible-net", "src\ansible-net\ansible-net.csproj", "{EB368D7B-83D7-4CE7-B155-1D87DEDB41D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ansible-net.tests", "ansible-net.tests\ansible-net.tests.csproj", "{B0D0F127-5697-40B7-BD4B-25E98E574962}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ansible-net.tests", "tests\ansible-net.tests\ansible-net.tests.csproj", "{B0D0F127-5697-40B7-BD4B-25E98E574962}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

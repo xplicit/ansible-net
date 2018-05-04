@@ -13,6 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../ansible-net/ansible-net.csproj" />
+    <ProjectReference Include="../../src/ansible-net/ansible-net.csproj" />
   </ItemGroup>
 </Project>

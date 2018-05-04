@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "test",
-                "${workspaceFolder}/ansible-net.tests/ansible-net.tests.csproj"
+                "${workspaceFolder}/tests/ansible-net.tests/ansible-net.tests.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

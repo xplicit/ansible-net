@@ -17,7 +17,7 @@ namespace Ansible.Tests
         {
             var sb = new StringBuilder();            
 
-            var playbook = new Playbook().Version();
+            var playbook = new Playbook("test").Version();
             
             playbook.Execute(x => sb.AppendLine(x));
 
