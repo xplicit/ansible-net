@@ -12,7 +12,7 @@
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/tests/ansible-net.tests/bin/Debug/netcoreapp2.0/ansible-net.tests.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/tests/ansible-net.tests",
+            //"cwd": "${workspaceFolder}/tests/ansible-net.tests",
             // For more information about the 'console' field, see https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md#console-terminal-window
             "console": "internalConsole",
             "stopAtEntry": false,
