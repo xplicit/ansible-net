@@ -18,7 +18,7 @@ namespace Ansible
             var args = base.CreateCommandLine();
 
             if (args.Length > 0)
-                args = Name + " " + args;
+                args = args + " " + Name;
             else
                 args = Name;
 

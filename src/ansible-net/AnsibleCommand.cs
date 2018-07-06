@@ -46,7 +46,7 @@ namespace Ansible
 
                 //TODO: need escaping
                 if (!string.IsNullOrEmpty(Options[key]))
-                    args += "=" + Options[key];
+                    args += " " + Options[key];
             }
 
             return args;
