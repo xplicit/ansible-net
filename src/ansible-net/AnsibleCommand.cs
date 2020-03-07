@@ -12,6 +12,9 @@ namespace Ansible
 
         protected Dictionary<string, string> Options = new Dictionary<string, string>();
 
+        public override string ToString() =>
+            Options.Keys.Count == 0 ? CommandName : $"{CommandName} {CreateCommandLine()}";
+
         public virtual void Execute(Action<string> onOutput = null, Action<string> onError = null)
         {
             var startInfo = new ProcessStartInfo
