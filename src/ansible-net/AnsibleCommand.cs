@@ -12,6 +12,8 @@ namespace Ansible
 
         protected Dictionary<string, string> Options = new Dictionary<string, string>();
 
+        protected Dictionary<string, string> EnvironmentVariables = new Dictionary<string, string>();
+
         public override string ToString() =>
             Options.Keys.Count == 0 ? CommandName : $"{CommandName} {CreateCommandLine()}";
 
@@ -27,6 +29,9 @@ namespace Ansible
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
             };
+
+            if (EnvironmentVariables.Count > 0)
+                AddEnvironmentVariables(startInfo);
 
             var commandProcess = new Process { StartInfo = startInfo };
             commandProcess.OutputDataReceived += (sender, args) => onOutput?.Invoke(args.Data);
@@ -53,6 +58,12 @@ namespace Ansible
             }
 
             return args;
+        }
+
+        protected virtual void AddEnvironmentVariables(ProcessStartInfo startInfo)
+        {
+            foreach(string key in EnvironmentVariables.Keys)
+                startInfo.EnvironmentVariables[key] = EnvironmentVariables[key];
         }
 
         public virtual AnsibleCommand Version() => AddParameter("--version");
@@ -143,6 +154,15 @@ namespace Ansible
                 Options[param] = value;
             else
                 Options.Add(param, value);
+            return this;
+        }
+
+        public virtual AnsibleCommand AddEnvironmentVariable(string variable, string value)
+        {
+            if (EnvironmentVariables.ContainsKey(variable))
+                EnvironmentVariables[variable] = value;
+            else
+                EnvironmentVariables.Add(variable, value);
             return this;
         }
     }
