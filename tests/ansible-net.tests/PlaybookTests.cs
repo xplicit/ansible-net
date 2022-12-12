@@ -1,7 +1,8 @@
-using System;
 using NUnit.Framework;
-using Ansible;
 using System.Text;
+using FluentAssertions;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace Ansible.Tests
 {
@@ -20,22 +21,34 @@ namespace Ansible.Tests
             var playbook = new Playbook("test").Version();
             
             playbook.Execute(x => sb.AppendLine(x));
+            var actual = sb.ToString();
 
-            Assert.That(sb.ToString(), Does.Contain("ansible-playbook"));
+            actual.Should().Contain("ansible-playbook");
         }
 
         [Test]
         public void CheckOutput()
         {
             var sb = new StringBuilder();
-
             var playbook = new Playbook("../../../../playbooks/environment.yml");
             
             playbook.Execute(x => sb.AppendLine(x));
+            var actual=sb.ToString();
 
-            var t=sb.ToString();
+            actual.Should().NotBeEmpty();
+        }
+        
+        [Test]
+        public void SetOutputAsJson_ReturnsValidJson()
+        {
+            var playbook = new Playbook("../../../../playbooks/hello-world.yml");
 
-            Assert.Pass();
+            var json = playbook.Execute();
+            var schema = JSchema.Parse("{}");
+            var obj = JObject.Parse(json);
+            var actual = obj.IsValid(schema);
+
+            actual.Should().BeTrue();
         }
     }
 }

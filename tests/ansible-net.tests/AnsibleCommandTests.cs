@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using System.Text;
+using FluentAssertions;
 
 namespace Ansible.Tests
 {
@@ -10,26 +10,25 @@ namespace Ansible.Tests
         {
             var sut = new AdHoc();
 
-            string cmd = sut.ToString();
+            var actualCmd = sut.ToString();
 
-            Assert.AreEqual(sut.CommandName, cmd);
+            actualCmd.Should().Be(sut.CommandName);
         }
 
         [Test]
         public void OutputCommandWithArgs()
         {
-            string arg0 = "all";
-            string arg1 = "--module-name";
-            string arg2 = "setup";
+            var arg0 = "all";
+            var arg1 = "--module-name";
+            var arg2 = "setup";
             var sut = new AdHoc();
             sut.AddParameter(arg0);
             sut.AddParameter(arg1, arg2);
-            string expectedCmd = $"{sut.CommandName} {arg0} {arg1} {arg2}";
+            var expectedCmd = $"{sut.CommandName} {arg0} {arg1} {arg2}";
 
-            string cmd = sut.ToString();
+            var actualCmd = sut.ToString();
 
-            Assert.AreEqual(expectedCmd, cmd);
+            actualCmd.Should().Be(expectedCmd);
         }
-
     }
 }

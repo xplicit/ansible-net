@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 
 namespace Ansible
 {
@@ -17,7 +18,7 @@ namespace Ansible
         public override string ToString() =>
             Options.Keys.Count == 0 ? CommandName : $"{CommandName} {CreateCommandLine()}";
 
-        public virtual void Execute(Action<string> onOutput = null, Action<string> onError = null)
+        private void ExecuteInternal(Action<string> onOutput, Action<string> onError, bool jsonOutput)
         {
             var startInfo = new ProcessStartInfo
             {
@@ -27,8 +28,14 @@ namespace Ansible
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardError = true
             };
+
+            if (jsonOutput)
+            {
+                startInfo.EnvironmentVariables.Add("ANSIBLE_CALLBACKS_ENABLED", "json");
+                startInfo.EnvironmentVariables.Add("ANSIBLE_STDOUT_CALLBACK", "json");
+            }
 
             if (EnvironmentVariables.Count > 0)
                 AddEnvironmentVariables(startInfo);
@@ -42,6 +49,21 @@ namespace Ansible
             commandProcess.BeginErrorReadLine();
 
             commandProcess.WaitForExit();
+        }
+        public virtual string Execute(Action<string> onOutput = null, Action<string> onError = null,
+            bool returnStdout = true, bool returnAsJson = true)
+        {
+            var sbOut = returnStdout ? new StringBuilder() : null;
+
+            ExecuteInternal(x =>
+            {
+                sbOut?.AppendLine(x);
+                onOutput?.Invoke(x);
+            }, 
+                x => onError?.Invoke(x), 
+                returnAsJson);
+
+            return sbOut?.ToString();
         }
 
         protected virtual string CreateCommandLine()
