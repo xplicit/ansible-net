@@ -1,3 +1,7 @@
+using Ansible.Types;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
 namespace Ansible.Commands;
 
 public class PlaybookCommand : AnsibleCommand
@@ -9,6 +13,18 @@ public class PlaybookCommand : AnsibleCommand
     public PlaybookCommand(string name)
     {
         Name = name;
+    }
+
+    public AnsiblePlayResult Play()
+    {
+        var json = base.Execute();
+
+        var result = JsonConvert.DeserializeObject<AnsiblePlayResult>(json, new JsonSerializerSettings{ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new SnakeCaseNamingStrategy()
+        }});
+
+        return result;
     }
 
     protected override string CreateCommandLine()

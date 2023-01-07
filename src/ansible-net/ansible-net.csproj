@@ -13,5 +13,9 @@
     <Description>The library provides interface for launching ansible commands and playbooks.</Description>
     <PackageProjectUrl>https://github.com/xplicit/ansible-net</PackageProjectUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
   
 </Project>
