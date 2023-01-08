@@ -1,3 +1,4 @@
+using System.IO;
 using NUnit.Framework;
 using System.Text;
 using Ansible.Commands;
@@ -44,7 +45,10 @@ public class PlaybookTests
     {
         var playbook = new PlaybookCommand("../../../../playbooks/hello-world.yml");
 
-        var json = playbook.Execute();
+        using var outputStream = new MemoryStream();
+        
+        playbook.Execute(outputStream, format: OutputFormat.Json);
+        var json = Encoding.UTF8.GetString(outputStream.ToArray());
             
         var schema = JSchema.Parse("{}");
         var obj = JObject.Parse(json);
@@ -64,5 +68,17 @@ public class PlaybookTests
         actual.Plays.Should().HaveCount(1);
         actual.Plays[0].Tasks.Should().HaveCount(3);
         actual.Plays[0].Tasks[2].Hosts["localhost"]["echo_output.stdout"].Should().Be("Hello, World!");
+    }
+    
+    [Test]
+    public void SyntaxErrorPlaybook_ReturnsErrorMessage()
+    {
+        var playbook = new PlaybookCommand("../../../../playbooks/syntax-error.yml");
+
+        using var errorStream = new MemoryStream();
+        var actual = playbook.Play(errorStream);
+        var actualError = Encoding.UTF8.GetString(errorStream.ToArray());
+
+        actualError.Should().Contain("ERROR");
     }
 }

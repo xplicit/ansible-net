@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.IO;
 using Ansible.Types;
 
 namespace Ansible.Commands;
@@ -51,20 +51,28 @@ public abstract class AnsibleCommand
 
         commandProcess.WaitForExit();
     }
-    public virtual string Execute(Action<string> onOutput = null, Action<string> onError = null,
-        bool returnStdout = true, bool returnAsJson = true)
+    public virtual void Execute(Action<string> onOutput = null, Action<string> onError = null,
+        OutputFormat format = OutputFormat.PlainText)
     {
-        var sbOut = returnStdout ? new StringBuilder() : null;
-
-        ExecuteInternal(x =>
-            {
-                sbOut?.AppendLine(x);
-                onOutput?.Invoke(x);
-            }, 
+        ExecuteInternal(
+            x => onOutput?.Invoke(x),
             x => onError?.Invoke(x), 
-            returnAsJson);
+            format == OutputFormat.Json);
+   }
 
-        return sbOut?.ToString();
+    public virtual void Execute(Stream output = null, Stream error = null, OutputFormat format = OutputFormat.PlainText)
+    {
+        var stdoutWriter = output != null ? new StreamWriter(output) : null;
+        var stderrWriter = error != null ? new StreamWriter(error) : null;
+        
+        ExecuteInternal(
+            x => stdoutWriter?.WriteLine(x),
+            x => stderrWriter?.WriteLine(x),
+            format == OutputFormat.Json
+        );
+        
+        stderrWriter?.Flush();
+        stdoutWriter?.Flush();
     }
 
     protected virtual string CreateCommandLine()

@@ -1,0 +1,11 @@
+---
+# Prints "Hello, World!" in console
+- hosts: localhost
+  tasks:
+    - name: Hello World
+      -command: echo "Hello, World!"
+      register: echo_output
+
+    - name: Print output
+      debug:
+        var: echo_output.stdout

@@ -1,3 +1,4 @@
+using System.IO;
 using Ansible.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,14 +16,25 @@ public class PlaybookCommand : AnsibleCommand
         Name = name;
     }
 
-    public AnsiblePlayResult Play()
+    public AnsiblePlayResult Play(Stream errors = null)
     {
-        var json = base.Execute();
+        using var outputStream = new MemoryStream();
+        
+        base.Execute(outputStream, errors, format: OutputFormat.Json);
 
-        var result = JsonConvert.DeserializeObject<AnsiblePlayResult>(json, new JsonSerializerSettings{ContractResolver = new DefaultContractResolver
+        var serializer = JsonSerializer.Create(new JsonSerializerSettings
         {
-            NamingStrategy = new SnakeCaseNamingStrategy()
-        }});
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            }
+        });
+
+        outputStream.Position = 0;
+        using var streamReader = new StreamReader(outputStream);
+        using var jsonTextReader = new JsonTextReader(streamReader);
+
+        var result = serializer.Deserialize<AnsiblePlayResult>(jsonTextReader);
 
         return result;
     }
